@@ -37,7 +37,7 @@ z_basis = de.Chebyshev('z',129, interval=(0, Lz), dealias=2/3) #'z'
 domain = de.Domain([x_basis, z_basis], grid_dtype=np.float64) #mesh = [1]?
 
 # 2D Boussinesq hydrodynamics
-problem = de.ParsedProblem(domain,
+problem = de.IVP(domain,
                            variables=['p','b','u','w','bz','uz','wz','temp','q','qz'])
                            #param_names=['Eu','Prandtl','Ra','M','tau','S','K2','aDT','T1ovDT','beta','T1','deltaT'])
 # introduce parameters
@@ -66,16 +66,16 @@ problem.add_equation("qz - dz(q) = 0")
 problem.add_equation("uz - dz(u) = 0")
 problem.add_equation("wz - dz(w) = 0")
 problem.add_equation("dz(temp)-bz = -beta")
-problem.add_left_bc("b = T1ovDT")
-problem.add_left_bc("q = K2*exp(aDT*T1ovDT)")
-problem.add_left_bc("u = 0")
-problem.add_left_bc("w = 0")
-problem.add_left_bc("temp=T1ovDT")
-problem.add_right_bc("b = T1ovDT-1.0+beta")
-problem.add_right_bc("q = K2*exp(aDT*(T1ovDT-1.0))")
-problem.add_right_bc("u = 0")
-problem.add_right_bc("w = 0", condition="(dx != 0)")
-problem.add_int_bc("p = 0", condition="(dx == 0)")
+problem.add_bc("left(b) = T1ovDT")
+problem.add_bc("left(q) = K2*exp(aDT*T1ovDT)")
+problem.add_bc("left(u) = 0")
+problem.add_bc("left(w) = 0")
+problem.add_bc("left(temp)=T1ovDT")
+problem.add_bc("right(b) = T1ovDT-1.0+beta")
+problem.add_bc("right(q) = K2*exp(aDT*(T1ovDT-1.0))")
+problem.add_bc("right(u) = 0")
+problem.add_bc("right(w) = 0", condition="(dx != 0)")
+problem.add_bc("int(p) = 0", condition="(dx == 0)")
 
 
 
